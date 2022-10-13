@@ -4,6 +4,8 @@ Bot that creates random boar sticker
 > Made for [this](https://t.me/THIS_IS_JUST_A_TEST) tg chat
 
 Bot generates random variations of boar sticker, blending \[randomly] generated BnW mask with \[randomly] hue-shifted original image
+
+[Most outstanding creations](https://t.me/addstickers/crazyboarcollection_by_beshenyboar_bot)
 <p>
   <img src="sticker.webp" width="250" height="250" alt="Original sticker" title="Original sticker">
   <em>Original sticker</em>
