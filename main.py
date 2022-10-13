@@ -37,7 +37,6 @@ class RandBoar:
         return arr
 
     # Mask creation
-    @staticmethod
     def make_mask(self, img):
         # Make mask Black and White
         bnw = ImageEnhance.Color(img)
