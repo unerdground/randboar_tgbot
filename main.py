@@ -148,6 +148,7 @@ def main():
                 offset = bot.get_last_update_id(updates) + 1
         except:
             print('Can\'t update')
+            break
 
 
         for i in range(0, len(updates)):
