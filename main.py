@@ -138,21 +138,29 @@ def main():
     bot = BoarBot(token)
     boar = RandBoar()
 
-    offset = 0
+    offset = bot.get_last_update_id(bot.get_updates(0)) + 1
 
     while True:
-        updates = bot.get_updates(offset)
+        try:
+            updates = bot.get_updates(offset)
 
-        if len(updates) > 0:
-            offset = bot.get_last_update_id(updates) + 1
+            if len(updates) > 0:
+                offset = bot.get_last_update_id(updates) + 1
+        except:
+            print('Can\'t update')
+
 
         for i in range(0, len(updates)):
             try:
-                update_text = updates[i]['message']['text']
+                try:
+                    update_text = updates[i]['message']['text']
+                except:
+                    print('Not a text')
+                    break
                 chat_id = updates[i]['message']['chat']['id']
                 reply = updates[i]['message']['message_id']
 
-                if update_text == '/randboar':
+                if update_text in ['/randboar', '/randboar@beshenyboar_bot']:
                     chance = random.randrange(200, 1001)
                     print(chance)
                     if chance == 1000:
@@ -180,7 +188,7 @@ def main():
                         img = boar.boar()
                         bot.send_sticker(chat_id, convert_to_data(img), reply)
             except:
-                print('Not a text or error occurred')
+                print('Error occurred')
 
 
 if __name__ == '__main__':
