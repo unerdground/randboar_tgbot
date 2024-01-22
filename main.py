@@ -1,4 +1,5 @@
 import random
+import time
 
 import numpy as np
 from PIL import Image, ImageEnhance
@@ -148,7 +149,8 @@ def main():
                 offset = bot.get_last_update_id(updates) + 1
         except:
             print('Can\'t update')
-            break
+            time.sleep(2)  # Wait before retrying
+            continue
 
 
         for i in range(0, len(updates)):
