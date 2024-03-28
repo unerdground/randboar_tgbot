@@ -2,6 +2,7 @@ import base64
 import random
 import re
 from enum import Enum
+from datetime import datetime, timedelta
 
 import numpy as np
 from PIL import Image, ImageEnhance
@@ -166,6 +167,8 @@ def main():
     # Using base64 string to avoid storing chinese symbols directly
     chinese_copypaste_base64 = "5Yqo5oCB572R6Ieq55Sx6ZeoIOWkqeWuiemWgCDlpKnlronpl6gg5rOV6Lyq5YqfIOadjua0quW/lyBGcmVlIFRpYmV0IOWFreWbm+WkqeWuiemWgOS6i+S7tiBUaGUgVGlhbmFubWVuIFNxdWFyZSBwcm90ZXN0cyBvZiAxOTg5IOWkqeWuiemWgOWkp+WxoOauuiBUaGUgVGlhbmFubWVuIFNxdWFyZSBNYXNzYWNyZSDlj43lj7PmtL7prKXniK0gVGhlIEFudGktUmlnaHRpc3QgU3RydWdnbGUg5aSn6LqN6YCy5pS/562WIFRoZSBHcmVhdCBMZWFwIEZvcndhcmQg5paH5YyW5aSn6Z2p5ZG9IFRoZSBHcmVhdCBQcm9sZXRhcmlhbiBDdWx0dXJhbCBSZXZvbHV0aW9uIOS6uuasiiBIdW1hbiBSaWdodHMg5rCR6YGLIERlbW9jcmF0aXphdGlvbiDoh6rnlLEgRnJlZWRvbSDnjajnq4sgSW5kZXBlbmRlbmNlIOWkmum7qOWItiBNdWx0aS1wYXJ0eSBzeXN0ZW0g5Y+w54GjIOiHuueBoyBUYWl3YW4gRm9ybW9zYSDkuK3oj6/msJHlnIsgUmVwdWJsaWMgb2YgQ2hpbmEg6KW/6JePIOWcn+S8r+eJuSDllJDlj6TnibkgVGliZXQg6YGU6LO05ZaH5ZibIERhbGFpIExhbWEg5rOV6Lyq5YqfIEZhbHVuIERhZmEg5paw55aG57at5ZC+54i+6Ieq5rK75Y2AIFRoZSBYaW5qaWFuZyBVeWdodXIgQXV0b25vbW91cyBSZWdpb24g6Ku+6LKd54i+5ZKM5bmz542OIE5vYmVsIFBlYWNlIFByaXplIOWKieaageazoiBMaXUgWGlhb2JvIOawkeS4uyDoqIDoq5Yg5oCd5oOzIOWPjeWFsSDlj43pnanlkb0g5oqX6K2wIOmBi+WLlSDpqLfkuoIg5pq05LqCIOmot+aTviDmk77kuoIg5oqX5pq0IOW5s+WPjSDntq3mrIog56S65aiB5ri46KGMIOadjua0quW/lyDms5XovKrlpKfms5Ug5aSn5rOV5byf5a2QIOW8t+WItuaWt+eoriDlvLfliLbloJXog44g5rCR5peP5reo5YyWIOS6uumrlOWvpumplyDogoXmuIUg6IOh6ICA6YKmIOi2mee0q+mZvSDprY/kuqznlJ8g546L5Li5IOmChOaUv+aWvOawkSDlkozlubPmvJToroog5r+A5rWB5Lit5ZyLIOWMl+S6rOS5i+aYpSDlpKfntIDlhYPmmYLloLEg5Lmd6KmV6KuW5YWx55Sj6buoIOeNqOijgSDlsIjliLYg5aOT5Yi2IOe1seS4gCDnm6PoppYg6Y6u5aOTIOi/q+WusyDkvrXnlaUg5o6g5aWqIOegtOWjniDmi7fllY8g5bGg5q66IOa0u+aRmOWZqOWumCDoqpjmi5Ag6LK36LOj5Lq65Y+jIOmBiumAsiDotbDnp4Eg5q+S5ZOBIOizo+a3qyDmmKXnlasg6LOt5Y2aIOWFreWQiOW9qSDlpKnlronploAg5aSp5a6J6ZeoIOazlei8quWKnyDmnY7mtKrlv5cgV2lubmllIHRoZSBQb29oIOWKieabieazouWKqOaAgee9keiHqueUsemXqA=="
     chinese_re = re.compile(r'[\u4e00-\u9fff]{3,}')
+    chinese_response = True
+    last_chinese_response = datetime.now()
 
     bot = BoarBot(token)
     boar = RandBoar()
@@ -228,7 +231,11 @@ def main():
                     img = boar.make_sticker(StickerType.DINO.value)
                     bot.send_sticker(chat_id, convert_to_data(img), reply)
 
-                elif (chinese_re.search(update_text)):
+                elif (update_text in ['/attackchina', '/attackchina@beshenyboar_bot']) and updates[i]['message']['from']['username'] in ['nekosamurai', 'mwessn']:
+                    chinese_response = not chinese_response
+                    bot.send_message(chat_id, 'Chinese response is enabled' if chinese_response else 'Chinese response is disabled', reply)
+
+                elif chinese_response and ((datetime.now() - last_chinese_response) > timedelta(minutes=15)) and chinese_re.search(update_text):
                         bot.send_message(chat_id, base64.b64decode(chinese_copypaste_base64).decode('utf-8'), reply)
                         bot.send_sticker(chat_id, convert_to_data(boar.boar()), None)
 
