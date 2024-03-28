@@ -238,6 +238,7 @@ def main():
                 elif chinese_response and ((datetime.now() - last_chinese_response) > timedelta(minutes=15)) and chinese_re.search(update_text):
                         bot.send_message(chat_id, base64.b64decode(chinese_copypaste_base64).decode('utf-8'), reply)
                         bot.send_sticker(chat_id, convert_to_data(boar.boar()), None)
+                        last_chinese_response = datetime.now()
 
             except:
                 print('Error occurred')
