@@ -1,7 +1,7 @@
 import base64
 import random
 import re
-import time
+from enum import Enum
 
 import numpy as np
 from PIL import Image, ImageEnhance
@@ -76,8 +76,26 @@ class RandBoar:
         return dst
 
     # Main function, handles boar creation
+    def make_sticker(self, stickertype):
+        sticker = Image.open(stickertype + '.webp')
+        result = self.combine(self.make_mask(sticker), self.colorize(sticker))
+
+        return result
+
     def boar(self):
-        sticker = Image.open('sticker.webp')
+        sticker = Image.open('boar.webp')
+        result = self.combine(self.make_mask(sticker), self.colorize(sticker))
+
+        return result
+
+    def chicken(self):
+        sticker = Image.open('chicken.webp')
+        result = self.combine(self.make_mask(sticker), self.colorize(sticker))
+
+        return result
+
+    def skull(self):
+        sticker = Image.open('skull.webp')
         result = self.combine(self.make_mask(sticker), self.colorize(sticker))
 
         return result
@@ -137,6 +155,12 @@ def convert_to_data(img):
     return buffer
 
 
+class StickerType(Enum):
+    BOAR = 'boar'
+    CHICKEN = 'chicken'
+    SKULL = 'skull'
+    DINO = 'dino'
+
 def main():
 
     # Using base64 string to avoid storing chinese symbols directly
@@ -189,11 +213,22 @@ def main():
                         img = Image.open('rare_sticker_5.webp')
                         bot.send_sticker(chat_id, convert_to_data(img), reply)
                     if chance < 910:
-                        img = boar.boar()
+                        img = boar.make_sticker(StickerType.BOAR.value)
                         bot.send_sticker(chat_id, convert_to_data(img), reply)
 
-                else:
-                    if (chinese_re.search(update_text)):
+                elif update_text in ['/randcock', '/randcock@beshenyboar_bot']:
+                    img = boar.make_sticker(StickerType.CHICKEN.value)
+                    bot.send_sticker(chat_id, convert_to_data(img), reply)
+
+                elif update_text in ['/ded', '/ded@beshenyboar_bot', '/imdead', '/imdead@beshenyboar_bot', '/randbones', '/randbones@beshenyboar_bot']:
+                    img = boar.make_sticker(StickerType.SKULL.value)
+                    bot.send_sticker(chat_id, convert_to_data(img), reply)
+
+                elif update_text in ['/randoil', '/randoil@beshenyboar_bot']:
+                    img = boar.make_sticker(StickerType.DINO.value)
+                    bot.send_sticker(chat_id, convert_to_data(img), reply)
+
+                elif (chinese_re.search(update_text)):
                         bot.send_message(chat_id, base64.b64decode(chinese_copypaste_base64).decode('utf-8'), reply)
                         bot.send_sticker(chat_id, convert_to_data(boar.boar()), None)
 
